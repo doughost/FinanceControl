@@ -21,6 +21,7 @@ class FinanceDatabase {
                     const loansStore = db.createObjectStore('loans', { keyPath: 'id', autoIncrement: true });
                     loansStore.createIndex('name', 'name', { unique: false });
                     loansStore.createIndex('startDate', 'startDate', { unique: false });
+                    loansStore.createIndex('category', 'category', { unique: false });
                 }
             };
 
@@ -232,4 +233,28 @@ class FinanceDatabase {
 }
 
 // Exportar uma instância única do banco de dados
-const db = new FinanceDatabase(); 
+const db = new FinanceDatabase();
+
+// Função para atualizar a estrutura do banco se necessário
+async function upgradeDatabase(db) {
+    const currentVersion = db.version;
+    console.log(`Atualizando banco de dados da versão ${currentVersion} para ${db.version + 1}`);
+    
+    // Verificar se a loja de objetos já existe
+    if (!db.objectStoreNames.contains('loans')) {
+        // Criar a loja de objetos
+        const loansStore = db.createObjectStore('loans', { keyPath: 'id', autoIncrement: true });
+        
+        // Adicionar índices para buscas mais rápidas
+        loansStore.createIndex('name', 'name', { unique: false });
+        loansStore.createIndex('category', 'category', { unique: false });
+        console.log('Loja de objetos "loans" criada com sucesso');
+    } else {
+        // Se a loja já existe, verificar se o índice de categoria existe
+        const loansStore = e.currentTarget.transaction.objectStore('loans');
+        if (!loansStore.indexNames.contains('category')) {
+            loansStore.createIndex('category', 'category', { unique: false });
+            console.log('Índice de categoria adicionado à loja existente');
+        }
+    }
+} 

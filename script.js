@@ -3,6 +3,7 @@ let loans = [
     {
         id: 1,
         name: "Mercado Livre",
+        category: "compras",
         startDate: "2024-11-01",
         installments: 6,
         installmentValue: 89.60,
@@ -20,6 +21,7 @@ let loans = [
     {
         id: 2,
         name: "Aliexpress",
+        category: "compras",
         startDate: "2025-02-01",
         installments: 8,
         installmentValue: 67.00,
@@ -39,6 +41,7 @@ let loans = [
     {
         id: 3,
         name: "Shirley",
+        category: "pessoal",
         startDate: "2025-01-01",
         installments: 12,
         installmentValue: 115.00,
@@ -71,9 +74,11 @@ const modalTitle = document.getElementById('modal-title');
 const totalValue = document.getElementById('total-value');
 const totalPaid = document.getElementById('total-paid');
 const totalPending = document.getElementById('total-pending');
+const filterButtons = document.querySelectorAll('.filter-button');
 
-// Armazenar o ID do empréstimo atual em caso de edição
+// Variáveis de estado
 let currentLoanId = null;
+let activeCategory = 'all'; // Filtro de categoria ativo
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
@@ -103,6 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 {
                     id: 1,
                     name: "Mercado Livre",
+                    category: "compras",
                     creditor: "Loja de Produtos de Beleza",
                     totalValue: 537.60,
                     startDate: "2024-11-01",
@@ -121,6 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 {
                     id: 2,
                     name: "Aliexpress",
+                    category: "compras",
                     creditor: "Auto Peças Silva",
                     totalValue: 536.00,
                     startDate: "2025-02-01",
@@ -141,6 +148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 {
                     id: 3,
                     name: "Shirley",
+                    category: "pessoal",
                     creditor: "Dona Shirley",
                     totalValue: 1380.00,
                     startDate: "2025-01-01",
@@ -253,6 +261,21 @@ function setupEventListeners() {
         }
     });
     loanValueInput.addEventListener('input', updateTotalValue);
+
+    // Adicionar event listeners para os botões de filtro
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const category = button.getAttribute('data-category');
+            
+            // Atualizar botões ativos
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Aplicar filtro
+            activeCategory = category;
+            renderLoans();
+        });
+    });
 }
 
 // Renderizar lista de dívidas
@@ -264,7 +287,17 @@ function renderLoans() {
         return;
     }
 
-    loans.forEach(loan => {
+    // Filtrar por categoria, se necessário
+    const filteredLoans = activeCategory === 'all' 
+        ? loans 
+        : loans.filter(loan => loan.category === activeCategory);
+        
+    if (filteredLoans.length === 0) {
+        loansList.innerHTML = `<p class="empty-list">Nenhuma pendência na categoria selecionada.</p>`;
+        return;
+    }
+
+    filteredLoans.forEach(loan => {
         const loanCard = document.createElement('div');
         loanCard.classList.add('loan-card');
         loanCard.setAttribute('data-id', loan.id);
@@ -283,6 +316,7 @@ function renderLoans() {
                 <div class="loan-title">
                     <i class="fas ${statusIcon}"></i>
                     ${loan.name}
+                    <span class="category-badge category-${loan.category || 'outros'}">${getCategoryName(loan.category)}</span>
                 </div>
                 <div class="loan-actions">
                     <button class="loan-action edit-loan" title="Editar">
@@ -304,6 +338,10 @@ function renderLoans() {
                         <div class="loan-info-value">${loan.creditor}</div>
                     </div>
                     ` : ''}
+                    <div class="loan-info-item">
+                        <div class="loan-info-label">Categoria</div>
+                        <div class="loan-info-value">${getCategoryName(loan.category)}</div>
+                    </div>
                     <div class="loan-info-item">
                         <div class="loan-info-label">Data de Início</div>
                         <div class="loan-info-value">${formatDate(loan.startDate)}</div>
@@ -420,6 +458,7 @@ async function openModal(loanId = null) {
     currentLoanId = loanId;
     const loanNameInput = document.getElementById('loan-name');
     const creditorNameInput = document.getElementById('creditor-name');
+    const loanCategorySelect = document.getElementById('loan-category');
     const loanTotalInput = document.getElementById('loan-total');
     const loanDateInput = document.getElementById('loan-date');
     const loanInstallmentsInput = document.getElementById('loan-installments');
@@ -438,6 +477,12 @@ async function openModal(loanId = null) {
                 loanNameInput.value = loan.name;
                 // Preencher o campo credor se existir, senão deixar vazio
                 creditorNameInput.value = loan.creditor || '';
+                // Definir categoria
+                if (loan.category) {
+                    loanCategorySelect.value = loan.category;
+                } else {
+                    loanCategorySelect.value = 'outros';
+                }
                 // Calcular o valor total baseado nas parcelas existentes
                 const totalValue = loan.installmentValue * loan.installments;
                 loanTotalInput.value = totalValue;
@@ -469,6 +514,7 @@ function closeModal() {
 async function saveFormData() {
     const loanNameInput = document.getElementById('loan-name');
     const creditorNameInput = document.getElementById('creditor-name');
+    const loanCategorySelect = document.getElementById('loan-category');
     const loanTotalInput = document.getElementById('loan-total');
     const loanDateInput = document.getElementById('loan-date');
     const loanInstallmentsInput = document.getElementById('loan-installments');
@@ -477,6 +523,7 @@ async function saveFormData() {
 
     const name = loanNameInput.value.trim();
     const creditor = creditorNameInput.value.trim();
+    const category = loanCategorySelect.value;
     const totalValue = parseFloat(loanTotalInput.value);
     const startDate = loanDateInput.value;
     const installments = parseInt(loanInstallmentsInput.value);
@@ -520,6 +567,7 @@ async function saveFormData() {
                 id: currentLoanId,
                 name,
                 creditor,
+                category,
                 totalValue,
                 startDate,
                 installments,
@@ -543,6 +591,7 @@ async function saveFormData() {
             const newLoan = {
                 name,
                 creditor,
+                category,
                 totalValue,
                 startDate,
                 installments,
@@ -750,4 +799,17 @@ function showNotification(message, type = 'success') {
             }, 500);
         }
     }, 5000);
+}
+
+// Função auxiliar para obter o nome da categoria
+function getCategoryName(categoryCode) {
+    const categories = {
+        'pessoal': 'Pessoal',
+        'familia': 'Família',
+        'compras': 'Compras Online',
+        'emergencia': 'Emergência',
+        'outros': 'Outros'
+    };
+    
+    return categories[categoryCode] || 'Outros';
 } 

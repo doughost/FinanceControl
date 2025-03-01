@@ -5,6 +5,8 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 ## Funcionalidades
 
 - Cadastro e gerenciamento de dívidas
+- Organização por categorias (Pessoal, Família, Compras Online, Emergência, etc.)
+- Filtro rápido por categoria de pendência
 - Controle detalhado de parcelas
 - Marcação de pagamentos realizados
 - Visualização do status de cada dívida
@@ -18,26 +20,31 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 1. Abra o arquivo `index.html` em qualquer navegador moderno
 2. As dívidas de exemplo serão carregadas automaticamente na primeira execução
 3. Clique em "NOVO" para adicionar um novo item
-4. Para visualizar os detalhes de uma dívida, clique no ícone de expansão (seta para baixo)
-5. Para marcar uma parcela como paga/pendente, clique no botão correspondente na linha da parcela
+4. Selecione a categoria apropriada para cada pendência
+5. Use os filtros para visualizar pendências por categoria
+6. Para visualizar os detalhes de uma dívida, clique no ícone de expansão (seta para baixo)
+7. Para marcar uma parcela como paga/pendente, clique no botão correspondente na linha da parcela
 
 ## Dados Pré-carregados
 
 O sistema vem com três exemplos de dívidas pré-configuradas:
 
 1. **Mercado Livre**
+   - Categoria: Compras Online
    - Comprada em Novembro de 2024
    - 6 parcelas de R$ 89,60
    - Vencimento no dia 28 de cada mês
    - Primeira parcela (Dezembro) já está marcada como paga
 
 2. **Aliexpress**
+   - Categoria: Compras Online
    - Comprado em Fevereiro de 2025
    - 8 parcelas de R$ 67,00
    - Vencimento no dia 17 de cada mês
    - Nenhuma parcela paga ainda
 
 3. **Shirley**
+   - Categoria: Pessoal
    - Iniciado em Janeiro de 2025
    - 12 parcelas de R$ 115,00
    - Vencimento no dia 17 de cada mês

@@ -54,6 +54,16 @@
                 <button id="add-loan-btn" class="btn"><i class="fas fa-plus"></i> NOVA PENDÊNCIA</button>
             </div>
             
+            <div class="filter-container">
+                <span>Filtrar por categoria: </span>
+                <button class="filter-button category-pessoal active" data-category="all">Todas</button>
+                <button class="filter-button category-pessoal" data-category="pessoal">Pessoal</button>
+                <button class="filter-button category-familia" data-category="familia">Família</button>
+                <button class="filter-button category-compras" data-category="compras">Compras Online</button>
+                <button class="filter-button category-emergencia" data-category="emergencia">Emergência</button>
+                <button class="filter-button category-outros" data-category="outros">Outros</button>
+            </div>
+            
             <div id="loans-list">
                 <!-- Os empréstimos serão carregados dinamicamente aqui -->
             </div>
@@ -77,6 +87,16 @@
                 <div class="form-group">
                     <label for="creditor-name">Credor (quem você deve):</label>
                     <input type="text" id="creditor-name">
+                </div>
+                <div class="form-group">
+                    <label for="loan-category">Categoria:</label>
+                    <select id="loan-category" required>
+                        <option value="pessoal">Pessoal</option>
+                        <option value="familia">Família</option>
+                        <option value="compras">Compras Online</option>
+                        <option value="emergencia">Emergência</option>
+                        <option value="outros">Outros</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="loan-total">Valor Total (R$):</label>
