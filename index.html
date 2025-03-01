@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4361ee">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Controle Financeiro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Controle Financeiro</h1>
+            <p class="subtitle">Cada registro é um passo para a paz financeira! ☮️📝</p>
+        </header>
+
+        <div class="summary">
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="summary-info">
+                    <h3>Total a Receber</h3>
+                    <p id="total-value">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="summary-info">
+                    <h3>Total Recebido</h3>
+                    <p id="total-paid">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="summary-info">
+                    <h3>Total Pendente</h3>
+                    <p id="total-pending">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="loans-container">
+            <div class="loans-header">
+                <h2>Pendentes</h2>
+                <button id="add-loan-btn" class="btn"><i class="fas fa-plus"></i> NOVA PENDÊNCIA</button>
+            </div>
+            
+            <div id="loans-list">
+                <!-- Os empréstimos serão carregados dinamicamente aqui -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 Copyright. Desenvolvido com ❤️ por <a href="https://github.com/dough0st" target="_blank">@dough0st</a></p>
+    </footer>
+
+    <!-- Modal para adicionar/editar empréstimos -->
+    <div id="loan-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Nova Pendência</h2>
+            <form id="loan-form">
+                <div class="form-group">
+                    <label for="loan-name">Nome da Pendência:</label>
+                    <input type="text" id="loan-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="creditor-name">Credor (quem você deve):</label>
+                    <input type="text" id="creditor-name">
+                </div>
+                <div class="form-group">
+                    <label for="loan-total">Valor Total (R$):</label>
+                    <input type="number" id="loan-total" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="loan-installments">Número de Parcelas:</label>
+                    <input type="number" id="loan-installments" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="loan-value">Valor da Parcela (R$):</label>
+                    <input type="number" id="loan-value" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="loan-date">Data de Início:</label>
+                    <input type="date" id="loan-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="loan-due-day">Dia de Vencimento:</label>
+                    <input type="number" id="loan-due-day" min="1" max="31" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
