@@ -25,19 +25,19 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 
 O sistema vem com três exemplos de dívidas pré-configuradas:
 
-1. **ESCOVA**
+1. **Mercado Livre**
    - Comprada em Novembro de 2024
    - 6 parcelas de R$ 89,60
    - Vencimento no dia 28 de cada mês
    - Primeira parcela (Dezembro) já está marcada como paga
 
-2. **MOTORZINHO**
+2. **Aliexpress**
    - Comprado em Fevereiro de 2025
    - 8 parcelas de R$ 67,00
    - Vencimento no dia 17 de cada mês
    - Nenhuma parcela paga ainda
 
-3. **EMPRÉSTIMO PARA DONA SHIRLEY**
+3. **Shirley**
    - Iniciado em Janeiro de 2025
    - 12 parcelas de R$ 115,00
    - Vencimento no dia 17 de cada mês

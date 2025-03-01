@@ -2,7 +2,7 @@
 let loans = [
     {
         id: 1,
-        name: "ESCOVA",
+        name: "Mercado Livre",
         startDate: "2024-11-01",
         installments: 6,
         installmentValue: 89.60,
@@ -19,7 +19,7 @@ let loans = [
     },
     {
         id: 2,
-        name: "MOTORZINHO",
+        name: "Aliexpress",
         startDate: "2025-02-01",
         installments: 8,
         installmentValue: 67.00,
@@ -38,7 +38,7 @@ let loans = [
     },
     {
         id: 3,
-        name: "EMPRÉSTIMO PARA DONA SHIRLEY",
+        name: "Shirley",
         startDate: "2025-01-01",
         installments: 12,
         installmentValue: 115.00,
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const exampleLoans = [
                 {
                     id: 1,
-                    name: "ESCOVA",
+                    name: "Mercado Livre",
                     creditor: "Loja de Produtos de Beleza",
                     totalValue: 537.60,
                     startDate: "2024-11-01",
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 {
                     id: 2,
-                    name: "MOTORZINHO",
+                    name: "Aliexpress",
                     creditor: "Auto Peças Silva",
                     totalValue: 536.00,
                     startDate: "2025-02-01",
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 {
                     id: 3,
-                    name: "EMPRÉSTIMO PARA DONA SHIRLEY",
+                    name: "Shirley",
                     creditor: "Dona Shirley",
                     totalValue: 1380.00,
                     startDate: "2025-01-01",
