@@ -2,5 +2,5 @@ git init
 git add .
 git commit -m "Primeira versão"
 git branch -M main
-git remote add origin https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git
+git remote add origin https://doughost.github.io/FinnanceControl
 git push -u origin main
