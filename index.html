@@ -10,12 +10,24 @@
     <title>Controle Financeiro</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Controle Financeiro</h1>
             <p class="subtitle">Cada registro é um passo para a paz financeira!</p>
+            <div class="notification-bell-container">
+                <button id="notification-bell" class="notification-bell" title="Centro de Notificações">
+                    <i class="fas fa-bell"></i>
+                    <span id="notification-badge" class="notification-badge">0</span>
+                </button>
+            </div>
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="theme-toggle" title="Alternar Tema Claro/Escuro">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
         </header>
 
         <div class="summary">
@@ -51,7 +63,13 @@
         <div class="loans-container">
             <div class="loans-header">
                 <h2>Pendentes</h2>
-                <button id="add-loan-btn" class="btn"><i class="fas fa-plus"></i> NOVA PENDÊNCIA</button>
+                <div class="header-actions">
+                    <div class="backup-buttons">
+                        <button id="export-data-btn" class="btn btn-secondary" title="Exportar Dados"><i class="fas fa-download"></i> Exportar</button>
+                        <button id="import-data-btn" class="btn btn-secondary" title="Importar Dados"><i class="fas fa-upload"></i> Importar</button>
+                    </div>
+                    <button id="add-loan-btn" class="btn"><i class="fas fa-plus"></i> NOVA PENDÊNCIA</button>
+                </div>
             </div>
             
             <div class="filter-container">
@@ -66,6 +84,92 @@
             
             <div id="loans-list">
                 <!-- Os empréstimos serão carregados dinamicamente aqui -->
+            </div>
+        </div>
+
+        <div class="reports-container">
+            <div class="reports-header">
+                <h2>Relatórios Financeiros</h2>
+                <button id="toggle-reports-btn" class="btn btn-secondary">
+                    <i class="fas fa-chart-pie"></i> Ver Relatórios
+                </button>
+            </div>
+            
+            <div id="reports-section" class="reports-section">
+                <div class="reports-tabs">
+                    <button class="report-tab active" data-tab="categories">Por Categoria</button>
+                    <button class="report-tab" data-tab="timeline">Linha do Tempo</button>
+                    <button class="report-tab" data-tab="summary">Resumo</button>
+                </div>
+                
+                <div class="reports-content">
+                    <div id="categories-report" class="report-content active">
+                        <div class="report-charts">
+                            <div class="chart-container">
+                                <h3>Distribuição por Categoria</h3>
+                                <canvas id="categories-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Status de Pagamento por Categoria</h3>
+                                <canvas id="payment-status-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="timeline-report" class="report-content">
+                        <div class="report-charts">
+                            <div class="chart-container">
+                                <h3>Pagamentos ao Longo do Tempo</h3>
+                                <canvas id="timeline-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Previsão de Pagamentos Futuros</h3>
+                                <canvas id="forecast-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="summary-report" class="report-content">
+                        <div class="summary-stats">
+                            <div class="stats-row">
+                                <div class="stat-card">
+                                    <div class="stat-title">Total de Pendências</div>
+                                    <div class="stat-value" id="total-loans">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Parcelas Totais</div>
+                                    <div class="stat-value" id="total-installments">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Parcelas Pagas</div>
+                                    <div class="stat-value" id="paid-installments">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Taxa de Pagamento</div>
+                                    <div class="stat-value" id="payment-rate">0%</div>
+                                </div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stat-card">
+                                    <div class="stat-title">Maior Pendência</div>
+                                    <div class="stat-value" id="largest-loan">-</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Categoria Mais Comum</div>
+                                    <div class="stat-value" id="most-common-category">-</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Média por Parcela</div>
+                                    <div class="stat-value" id="average-installment">R$ 0,00</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Próximo Vencimento</div>
+                                    <div class="stat-value" id="next-due-date">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -120,6 +224,88 @@
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="import-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Importar Dados</h2>
+            <div class="import-container">
+                <p class="warning-text">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    Atenção: A importação substituirá todos os dados atuais. Faça um backup antes de continuar.
+                </p>
+                <div class="file-input-container">
+                    <input type="file" id="import-file" accept=".json">
+                    <label for="import-file" class="file-input-label">
+                        <i class="fas fa-file-upload"></i> Selecionar arquivo
+                    </label>
+                    <span id="file-name">Nenhum arquivo selecionado</span>
+                </div>
+                <div class="import-actions">
+                    <button id="import-confirm-btn" class="btn btn-primary" disabled>Importar Dados</button>
+                    <button id="import-cancel-btn" class="btn btn-secondary">Cancelar</button>
+                </div>
+                <div id="import-status" class="import-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Centro de Notificações -->
+    <div id="notifications-center" class="notifications-center">
+        <div class="notifications-header">
+            <h3>Notificações de Vencimento</h3>
+            <div class="notification-actions">
+                <button id="notification-settings-btn" class="btn-icon" title="Configurações">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button id="mark-all-read-btn" class="btn-icon" title="Marcar todas como lidas">
+                    <i class="fas fa-check-double"></i>
+                </button>
+                <button id="close-notifications-btn" class="btn-icon" title="Fechar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="notifications-content">
+            <div id="notifications-list" class="notifications-list">
+                <!-- As notificações serão carregadas dinamicamente aqui -->
+            </div>
+            <div id="empty-notifications" class="empty-notifications">
+                <i class="far fa-bell-slash"></i>
+                <p>Não há notificações no momento</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações de Notificações -->
+    <div id="notification-settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Configurações de Notificações</h2>
+            <form id="notification-settings-form">
+                <div class="form-group">
+                    <label for="notification-days">Alertar com quantos dias de antecedência:</label>
+                    <input type="number" id="notification-days" min="1" max="30" value="7">
+                    <p class="form-help">Você receberá notificações quando parcelas estiverem próximas do vencimento.</p>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="show-notification-popup" checked>
+                        Mostrar popups de notificação
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="notification-on-startup" checked>
+                        Verificar notificações ao iniciar
+                    </label>
+                </div>
+                <div class="form-group button-group">
+                    <button type="submit" class="btn btn-primary">Salvar Configurações</button>
                 </div>
             </form>
         </div>

@@ -230,6 +230,104 @@ class FinanceDatabase {
             };
         });
     }
+
+    // Exportar todos os dados do banco de dados
+    async exportAllData() {
+        return new Promise((resolve, reject) => {
+            if (!this.dbReady) {
+                reject(new Error('Banco de dados não está pronto.'));
+                return;
+            }
+
+            const transaction = this.db.transaction(['loans'], 'readonly');
+            const store = transaction.objectStore('loans');
+            
+            const request = store.getAll();
+            
+            request.onsuccess = (event) => {
+                const data = {
+                    version: this.dbVersion,
+                    timestamp: new Date().toISOString(),
+                    loans: event.target.result
+                };
+                
+                resolve(data);
+            };
+            
+            request.onerror = (event) => {
+                console.error('Erro ao exportar dados:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Importar dados para o banco de dados
+    async importData(data) {
+        return new Promise(async (resolve, reject) => {
+            if (!this.dbReady) {
+                reject(new Error('Banco de dados não está pronto.'));
+                return;
+            }
+
+            // Validar dados
+            if (!data || !data.loans || !Array.isArray(data.loans)) {
+                reject(new Error('Formato de dados inválido.'));
+                return;
+            }
+
+            try {
+                // Limpar banco de dados atual
+                await this.clearAllData();
+                
+                // Criar transação para adicionar os novos dados
+                const transaction = this.db.transaction(['loans'], 'readwrite');
+                const store = transaction.objectStore('loans');
+                
+                // Adicionar cada dívida
+                let counter = 0;
+                const total = data.loans.length;
+                
+                // Função para adicionar uma dívida
+                const addLoan = (index) => {
+                    if (index >= total) {
+                        // Todos os itens foram adicionados
+                        transaction.oncomplete = () => {
+                            resolve({success: true, count: counter});
+                        };
+                        return;
+                    }
+                    
+                    const loan = data.loans[index];
+                    const request = store.add(loan);
+                    
+                    request.onsuccess = () => {
+                        counter++;
+                        // Continuar com o próximo
+                        addLoan(index + 1);
+                    };
+                    
+                    request.onerror = (event) => {
+                        console.error(`Erro ao importar item ${index}:`, event.target.error);
+                        // Continuar com o próximo, mesmo se houver erro
+                        addLoan(index + 1);
+                    };
+                };
+                
+                // Iniciar o processo de adição
+                addLoan(0);
+                
+                // Configurar manipulador de erro para a transação inteira
+                transaction.onerror = (event) => {
+                    console.error('Erro na transação de importação:', event.target.error);
+                    reject(event.target.error);
+                };
+                
+            } catch (error) {
+                console.error('Erro ao importar dados:', error);
+                reject(error);
+            }
+        });
+    }
 }
 
 // Exportar uma instância única do banco de dados

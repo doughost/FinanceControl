@@ -14,41 +14,24 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 - Banco de dados integrado no navegador (IndexedDB)
 - Sistema de notificações para feedback ao usuário
 - Interface responsiva para desktop e dispositivos móveis
+- **Exportação e importação de dados para backup**
+- **Relatórios financeiros e gráficos interativos**
+- **Notificações de vencimento para parcelas próximas**
+- **Modo escuro (Dark Mode) para conforto visual**
 
 ## Como Usar
 
 1. Abra o arquivo `index.html` em qualquer navegador moderno
-2. As dívidas de exemplo serão carregadas automaticamente na primeira execução
-3. Clique em "NOVO" para adicionar um novo item
-4. Selecione a categoria apropriada para cada pendência
-5. Use os filtros para visualizar pendências por categoria
-6. Para visualizar os detalhes de uma dívida, clique no ícone de expansão (seta para baixo)
-7. Para marcar uma parcela como paga/pendente, clique no botão correspondente na linha da parcela
-
-## Dados Pré-carregados
-
-O sistema vem com três exemplos de dívidas pré-configuradas:
-
-1. **Mercado Livre**
-   - Categoria: Compras Online
-   - Comprada em Novembro de 2024
-   - 6 parcelas de R$ 89,60
-   - Vencimento no dia 28 de cada mês
-   - Primeira parcela (Dezembro) já está marcada como paga
-
-2. **Aliexpress**
-   - Categoria: Compras Online
-   - Comprado em Fevereiro de 2025
-   - 8 parcelas de R$ 67,00
-   - Vencimento no dia 17 de cada mês
-   - Nenhuma parcela paga ainda
-
-3. **Shirley**
-   - Categoria: Pessoal
-   - Iniciado em Janeiro de 2025
-   - 12 parcelas de R$ 115,00
-   - Vencimento no dia 17 de cada mês
-   - Nenhuma parcela paga ainda
+2. Clique em "NOVO" para adicionar um novo item
+3. Selecione a categoria apropriada para cada pendência
+4. Use os filtros para visualizar pendências por categoria
+5. Para visualizar os detalhes de uma dívida, clique no ícone de expansão (seta para baixo)
+6. Para marcar uma parcela como paga/pendente, clique no botão correspondente na linha da parcela
+7. **Para fazer backup dos seus dados, clique no botão "Exportar"**
+8. **Para restaurar um backup, clique no botão "Importar" e selecione o arquivo**
+9. **Para visualizar relatórios financeiros, clique no botão "Ver Relatórios"**
+10. **Para visualizar notificações de vencimento, clique no ícone de sino no topo da página**
+11. **Para alternar entre modo claro e escuro, clique no ícone de sol/lua no canto superior direito**
 
 ## Tecnologias Utilizadas
 
@@ -58,6 +41,7 @@ O sistema vem com três exemplos de dívidas pré-configuradas:
 - Banco de dados IndexedDB para armazenamento persistente
 - Font Awesome para ícones
 - Formatação brasileira de valores monetários (R$ 0.000,00)
+- **Chart.js para gráficos interativos e visualizações de dados**
 
 ## Instalação
 
@@ -81,15 +65,72 @@ Esta aplicação utiliza IndexedDB, um banco de dados NoSQL integrado nos navega
 
 Os dados são armazenados no banco de dados IndexedDB do navegador. Para evitar perda de dados:
 
-- Não limpe os dados de navegação do seu navegador sem antes fazer backup
-- Use o mesmo navegador e dispositivo para acessar o sistema
+- Use a função de exportação regularmente para salvar backups dos seus dados
+- Os backups são salvos como arquivos JSON com nome contendo a data
+- Você pode importar um backup a qualquer momento usando a função de importação
+- A importação substitui todos os dados atuais pelos dados do arquivo de backup
+- Recomendamos fazer backup antes de limpar os dados do navegador ou trocar de dispositivo
+
+## Relatórios Financeiros
+
+O sistema inclui uma seção de relatórios financeiros com visualizações detalhadas:
+
+- **Relatórios por Categoria**:
+  - Distribuição do valor total por categoria
+  - Status de pagamento (pago vs. pendente) por categoria
+  - Identificação visual por cores para cada categoria
+
+- **Análise Temporal**:
+  - Gráfico de linha do tempo mostrando pagamentos e pendências
+  - Previsão de pagamentos futuros com valor mensal e acumulado
+  - Visualização clara da evolução financeira ao longo do tempo
+
+- **Resumo Estatístico**:
+  - Totais de pendências e parcelas
+  - Taxa de pagamento e média por parcela
+  - Identificação da maior pendência e categoria mais comum
+  - Alerta para próximo vencimento
+
+Use os relatórios para obter insights sobre seus padrões de gastos, planejar futuros pagamentos e manter um controle financeiro mais eficiente.
+
+## Sistema de Notificações de Vencimento
+
+O aplicativo inclui um sistema completo de notificações para alertar sobre parcelas próximas do vencimento:
+
+- **Centro de Notificações**:
+  - Acesso rápido através do ícone de sino no topo da página
+  - Indicador visual com contagem de notificações não lidas
+  - Interface intuitiva para visualizar e gerenciar alertas
+
+- **Alertas Personalizáveis**:
+  - Configuração do número de dias de antecedência para receber alertas
+  - Opção para ativar/desativar popups de notificação
+  - Verificação automática de vencimentos ao iniciar o aplicativo
+
+- **Interatividade**:
+  - Ao clicar em uma notificação, o sistema destaca a pendência correspondente
+  - Marcação visual para diferenciar notificações lidas e não lidas
+  - Opções para marcar todas como lidas ou excluir notificações individuais
+
+Este sistema ajuda a evitar atrasos em pagamentos e manter um controle financeiro mais eficiente, reduzindo custos com juros e multas por atraso.
+
+## Modo Escuro (Dark Mode)
+
+O aplicativo oferece um modo escuro completo para reduzir o cansaço visual, especialmente em ambientes com pouca luz:
+
+- **Alternância Intuitiva**: Botão de sol/lua no canto superior para mudar rapidamente entre temas.
+- **Persistência de Preferência**: Sua escolha de tema é salva automaticamente no localStorage.
+- **Detecção Automática**: O aplicativo detecta e aplica a preferência do sistema operacional.
+- **Design Adaptativo**: Todos os elementos da interface são otimizados para ambos os temas.
+- **Gráficos Otimizados**: Os relatórios e gráficos se adaptam automaticamente ao tema selecionado.
+
+O modo escuro não apenas oferece conforto visual, mas também pode reduzir o consumo de bateria em dispositivos com telas OLED/AMOLED.
 
 ## Desenvolvimento Futuro
 
 Possíveis melhorias para futuras versões:
 
-- Exportação e importação de dados (CSV/JSON)
 - Sincronização com a nuvem
-- Notificações de parcelas próximas do vencimento
 - Múltiplos devedores/categorias
-- Relatórios e gráficos 
+- Relatórios mais avançados e exportação de dados em PDF
+- Integração com calendários externos 
