@@ -1,4 +1,4 @@
-# Controle Financeiro
+# Controle de Dívidas
 
 Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal para acompanhar dinheiro emprestado, compras parceladas feitas para terceiros ou qualquer situação onde você precisa controlar pagamentos recebidos.
 
