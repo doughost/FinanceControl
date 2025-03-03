@@ -49,12 +49,6 @@ const totalPaid = document.getElementById('total-paid');
 const totalPending = document.getElementById('total-pending');
 const modalTitle = document.getElementById('modal-title');
 
-// Elementos de relatórios
-const toggleReportsBtn = document.getElementById('toggle-reports-btn');
-const reportsSection = document.getElementById('reports-section');
-const reportTabs = document.querySelectorAll('.report-tab');
-const reportContents = document.querySelectorAll('.report-content');
-
 // Elementos do DOM para notificações
 const notificationBell = document.getElementById('notification-bell');
 const notificationBadge = document.getElementById('notification-badge');
@@ -73,15 +67,11 @@ const notificationSettingsModalClose = notificationSettingsModal.querySelector('
 
 // Variáveis de estado
 let currentLoanId = null;
-let activeCategory = 'all'; // Filtro de categoria ativo
-let charts = {}; // Armazenar referências para os gráficos
-
-// Variáveis de estado de notificações
-let notificationsEnabled = true;
-let notificationDays = 7; // Padrão: 7 dias antes
+let activeCategory = 'all';
+let notifications = [];
+let notificationDays = 7;
 let showNotificationPopup = true;
 let checkOnStartup = true;
-let notifications = []; // Array para armazenar as notificações
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
@@ -224,28 +214,6 @@ function setupEventListeners() {
         });
     });
     
-    // Eventos para relatórios
-    toggleReportsBtn.addEventListener('click', toggleReportsSection);
-    
-    reportTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const tabId = tab.getAttribute('data-tab');
-            
-            // Atualizar abas ativas
-            reportTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            // Atualizar conteúdo ativo
-            reportContents.forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(`${tabId}-report`).classList.add('active');
-            
-            // Atualizar gráficos quando a aba for selecionada
-            updateReports();
-        });
-    });
-
     // Eventos para notificações
     notificationBell.addEventListener('click', toggleNotificationsCenter);
     closeNotificationsBtn.addEventListener('click', closeNotificationsCenter);
@@ -1176,12 +1144,6 @@ function toggleTheme() {
     localStorage.setItem('theme', currentTheme);
     applyTheme(currentTheme);
     updateThemeIcon();
-    
-    // Atualizar gráficos para se adequarem ao novo tema
-    if (charts.categoriesChart || charts.paymentStatusChart || 
-        charts.timelineChart || charts.forecastChart) {
-        updateReports();
-    }
 }
 
 function initTheme() {

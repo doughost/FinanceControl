@@ -14,7 +14,6 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 - Banco de dados integrado no navegador (IndexedDB)
 - Sistema de notificações para feedback ao usuário
 - Interface responsiva para desktop e dispositivos móveis
-- **Relatórios financeiros e gráficos interativos**
 - **Notificações de vencimento para parcelas próximas**
 - **Modo escuro (Dark Mode) para conforto visual**
 
@@ -26,9 +25,8 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 4. Use os filtros para visualizar pendências por categoria
 5. Para visualizar os detalhes de uma dívida, clique no ícone de expansão (seta para baixo)
 6. Para marcar uma parcela como paga/pendente, clique no botão correspondente na linha da parcela
-7. **Para visualizar relatórios financeiros, clique no botão "Ver Relatórios"**
-8. **Para visualizar notificações de vencimento, clique no ícone de sino no topo da página**
-9. **Para alternar entre modo claro e escuro, clique no ícone de sol/lua no canto superior direito**
+7. **Para visualizar notificações de vencimento, clique no ícone de sino no topo da página**
+8. **Para alternar entre modo claro e escuro, clique no ícone de sol/lua no canto superior direito**
 
 ## Tecnologias Utilizadas
 
@@ -38,7 +36,6 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 - Banco de dados IndexedDB para armazenamento persistente
 - Font Awesome para ícones
 - Formatação brasileira de valores monetários (R$ 0.000,00)
-- **Chart.js para gráficos interativos e visualizações de dados**
 
 ## Instalação
 
@@ -57,28 +54,6 @@ Esta aplicação utiliza IndexedDB, um banco de dados NoSQL integrado nos navega
 - Funciona offline sem necessidade de conexão com a internet
 - Os dados persistem mesmo após fechar o navegador
 - Importação automática de dados do localStorage (se houver)
-
-## Relatórios Financeiros
-
-O sistema inclui uma seção de relatórios financeiros com visualizações detalhadas:
-
-- **Relatórios por Categoria**:
-  - Distribuição do valor total por categoria
-  - Status de pagamento (pago vs. pendente) por categoria
-  - Identificação visual por cores para cada categoria
-
-- **Análise Temporal**:
-  - Gráfico de linha do tempo mostrando pagamentos e pendências
-  - Previsão de pagamentos futuros com valor mensal e acumulado
-  - Visualização clara da evolução financeira ao longo do tempo
-
-- **Resumo Estatístico**:
-  - Totais de pendências e parcelas
-  - Taxa de pagamento e média por parcela
-  - Identificação da maior pendência e categoria mais comum
-  - Alerta para próximo vencimento
-
-Use os relatórios para obter insights sobre seus padrões de gastos, planejar futuros pagamentos e manter um controle financeiro mais eficiente.
 
 ## Sistema de Notificações de Vencimento
 
@@ -109,7 +84,6 @@ O aplicativo oferece um modo escuro completo para reduzir o cansaço visual, esp
 - **Persistência de Preferência**: Sua escolha de tema é salva automaticamente no localStorage.
 - **Detecção Automática**: O aplicativo detecta e aplica a preferência do sistema operacional.
 - **Design Adaptativo**: Todos os elementos da interface são otimizados para ambos os temas.
-- **Gráficos Otimizados**: Os relatórios e gráficos se adaptam automaticamente ao tema selecionado.
 
 O modo escuro não apenas oferece conforto visual, mas também pode reduzir o consumo de bateria em dispositivos com telas OLED/AMOLED.
 
