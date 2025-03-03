@@ -18,10 +18,22 @@ class FinanceDatabase {
                 
                 // Criar object store para as dívidas se não existir
                 if (!db.objectStoreNames.contains('loans')) {
-                    const loansStore = db.createObjectStore('loans', { keyPath: 'id', autoIncrement: true });
+                    const loansStore = db.createObjectStore('loans', { keyPath: 'id' });
                     loansStore.createIndex('name', 'name', { unique: false });
                     loansStore.createIndex('startDate', 'startDate', { unique: false });
-                    loansStore.createIndex('category', 'category', { unique: false });
+                    console.log('Loja de empréstimos criada');
+                }
+                
+                if (!db.objectStoreNames.contains('notifications')) {
+                    const notificationsStore = db.createObjectStore('notifications', { keyPath: 'id' });
+                    notificationsStore.createIndex('type', 'type', { unique: false });
+                    notificationsStore.createIndex('date', 'date', { unique: false });
+                    console.log('Loja de notificações criada');
+                }
+                
+                if (!db.objectStoreNames.contains('settings')) {
+                    const settingsStore = db.createObjectStore('settings', { keyPath: 'id' });
+                    console.log('Loja de configurações criada');
                 }
             };
 
@@ -243,12 +255,8 @@ async function upgradeDatabase(db) {
     // Verificar se a loja de objetos já existe
     if (!db.objectStoreNames.contains('loans')) {
         // Criar a loja de objetos
-        const loansStore = db.createObjectStore('loans', { keyPath: 'id', autoIncrement: true });
-        
-        // Adicionar índices para buscas mais rápidas
-        loansStore.createIndex('name', 'name', { unique: false });
-        loansStore.createIndex('category', 'category', { unique: false });
-        console.log('Loja de objetos "loans" criada com sucesso');
+        const loansStore = db.createObjectStore('loans', { keyPath: 'id' });
+        console.log('Loja de empréstimos criada');
     } else {
         // Se a loja já existe, verificar se o índice de categoria existe
         const loansStore = e.currentTarget.transaction.objectStore('loans');
@@ -257,4 +265,102 @@ async function upgradeDatabase(db) {
             console.log('Índice de categoria adicionado à loja existente');
         }
     }
+}
+
+function initDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('FinanceControlDB', 1);
+        
+        request.onerror = function(event) {
+            console.error('Erro ao abrir o banco de dados:', event.target.error);
+            reject(event.target.error);
+        };
+        
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            
+            // Criar ou atualizar a estrutura do banco de dados
+            if (!db.objectStoreNames.contains('loans')) {
+                const loansStore = db.createObjectStore('loans', { keyPath: 'id' });
+                loansStore.createIndex('name', 'name', { unique: false });
+                loansStore.createIndex('startDate', 'startDate', { unique: false });
+                console.log('Loja de empréstimos criada');
+            }
+            
+            if (!db.objectStoreNames.contains('notifications')) {
+                const notificationsStore = db.createObjectStore('notifications', { keyPath: 'id' });
+                notificationsStore.createIndex('type', 'type', { unique: false });
+                notificationsStore.createIndex('date', 'date', { unique: false });
+                console.log('Loja de notificações criada');
+            }
+            
+            if (!db.objectStoreNames.contains('settings')) {
+                const settingsStore = db.createObjectStore('settings', { keyPath: 'id' });
+                console.log('Loja de configurações criada');
+            }
+        };
+        
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            console.log('Banco de dados aberto com sucesso');
+            
+            // Verificar e atualizar a estrutura do banco de dados se necessário
+            const version = parseInt(db.version);
+            let shouldUpgrade = false;
+            
+            const transaction = db.transaction(['loans'], 'readonly');
+            const loansStore = transaction.objectStore('loans');
+            
+            // Verificar se existem lojas e índices necessários
+            if (!db.objectStoreNames.contains('notifications')) {
+                shouldUpgrade = true;
+            }
+            
+            if (!db.objectStoreNames.contains('settings')) {
+                shouldUpgrade = true;
+            }
+            
+            transaction.oncomplete = function() {
+                if (shouldUpgrade) {
+                    console.log('Atualizando a estrutura do banco de dados...');
+                    db.close();
+                    const upgradeRequest = indexedDB.open('FinanceControlDB', version + 1);
+                    
+                    upgradeRequest.onupgradeneeded = function(event) {
+                        const db = event.target.result;
+                        
+                        if (!db.objectStoreNames.contains('notifications')) {
+                            const notificationsStore = db.createObjectStore('notifications', { keyPath: 'id' });
+                            notificationsStore.createIndex('type', 'type', { unique: false });
+                            notificationsStore.createIndex('date', 'date', { unique: false });
+                            console.log('Loja de notificações criada durante atualização');
+                        }
+                        
+                        if (!db.objectStoreNames.contains('settings')) {
+                            const settingsStore = db.createObjectStore('settings', { keyPath: 'id' });
+                            console.log('Loja de configurações criada durante atualização');
+                        }
+                    };
+                    
+                    upgradeRequest.onsuccess = function(event) {
+                        db = event.target.result;
+                        console.log('Banco de dados atualizado com sucesso');
+                        resolve();
+                    };
+                    
+                    upgradeRequest.onerror = function(event) {
+                        console.error('Erro ao atualizar o banco de dados:', event.target.error);
+                        reject(event.target.error);
+                    };
+                } else {
+                    resolve();
+                }
+            };
+            
+            transaction.onerror = function(event) {
+                console.error('Erro na transação:', event.target.error);
+                reject(event.target.error);
+            };
+        };
+    });
 } 

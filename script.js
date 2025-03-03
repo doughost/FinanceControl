@@ -42,7 +42,6 @@ const loanForm = document.getElementById('loan-form');
 const loansContainer = document.getElementById('loans-container');
 const loansList = document.getElementById('loans-list');
 const filterContainer = document.querySelector('.filter-container');
-const filterButtons = document.querySelectorAll('.filter-button');
 const themeToggle = document.getElementById('theme-toggle');
 const totalValue = document.getElementById('total-value');
 const totalPaid = document.getElementById('total-paid');
@@ -67,7 +66,7 @@ const notificationSettingsModalClose = notificationSettingsModal.querySelector('
 
 // Variáveis de estado
 let currentLoanId = null;
-let activeCategory = 'all';
+let isEditing = false;
 let notifications = [];
 let notificationDays = 7;
 let showNotificationPopup = true;
@@ -198,23 +197,6 @@ function setupEventListeners() {
     });
     loanValueInput.addEventListener('input', updateTotalValue);
 
-    // Adicionar event listeners para os botões de filtro
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const category = button.getAttribute('data-category');
-            
-            // Remover classe ativa de todos os botões
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Adicionar classe ativa ao botão clicado
-            button.classList.add('active');
-            
-            // Filtrar empréstimos
-            activeCategory = category;
-            renderLoans();
-        });
-    });
-    
     // Eventos para notificações
     notificationBell.addEventListener('click', toggleNotificationsCenter);
     closeNotificationsBtn.addEventListener('click', closeNotificationsCenter);
@@ -246,241 +228,121 @@ function setupEventListeners() {
 
 // Função para renderizar a lista de empréstimos
 function renderLoans() {
-    // Filtrar empréstimos pela categoria
-    const filteredLoans = activeCategory === 'all' 
-        ? loans 
-        : loans.filter(loan => loan.category === activeCategory);
+    const loansList = document.getElementById('loans-list');
+    loansList.innerHTML = '';
     
-    // Se não houver empréstimos, mostrar mensagem
-    if (filteredLoans.length === 0) {
-        if (activeCategory === 'all') {
-            loansList.innerHTML = `
-                <div class="empty-list">
-                    <p><i class="fas fa-info-circle"></i> Nenhuma pendência cadastrada.</p>
-                    <p>Clique no botão "NOVA PENDÊNCIA" para adicionar seu primeiro registro.</p>
-                </div>
-            `;
-        } else {
-            loansList.innerHTML = `
-                <div class="empty-list">
-                    <p><i class="fas fa-filter"></i> Nenhuma pendência na categoria <strong>${getCategoryName(activeCategory)}</strong>.</p>
-                </div>
-            `;
-        }
+    if (loans.length === 0) {
+        loansList.innerHTML = `
+            <div class="empty-list">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <p>Nenhuma pendência registrada. Clique em "Nova Pendência" para adicionar.</p>
+            </div>
+        `;
         return;
     }
     
-    // Ordenar empréstimos por data de início (mais recente primeiro)
-    filteredLoans.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-
-    loansList.innerHTML = '';
-
-    filteredLoans.forEach(loan => {
-        const loanCard = document.createElement('div');
-        loanCard.classList.add('loan-card');
-        loanCard.setAttribute('data-id', loan.id);
-
-        // Calcular totais para esta dívida
-        const totalLoanValue = loan.totalValue || (loan.installments * loan.installmentValue);
-        const paidValue = loan.payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + p.value, 0);
-        const pendingValue = totalLoanValue - paidValue;
-        
-        // Usar sempre o ícone de exclamação para todas as pendências
-        const statusIcon = 'fa-exclamation-circle';
-
-        // Cabeçalho do card
-        loanCard.innerHTML = `
-            <div class="loan-header">
-                <div class="loan-title">
-                    <i class="fas ${statusIcon}"></i>
-                    ${loan.name}
-                    <span class="category-badge category-${loan.category || 'outros'}">${getCategoryName(loan.category)}</span>
-                </div>
-                <div class="loan-actions">
-                    <button class="loan-action edit-loan" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="loan-action delete-loan" title="Excluir">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    <button class="loan-action toggle-details" title="Expandir/Recolher">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="loan-details">
-                <div class="loan-info">
-                    ${loan.creditor ? `
-                    <div class="loan-info-item">
-                        <div class="loan-info-label">Credor</div>
-                        <div class="loan-info-value">${loan.creditor}</div>
-                    </div>
-                    ` : ''}
-                    <div class="loan-info-item">
-                        <div class="loan-info-label">Categoria</div>
-                        <div class="loan-info-value">${getCategoryName(loan.category)}</div>
-                    </div>
-                    <div class="loan-info-item">
-                        <div class="loan-info-label">Data de Início</div>
-                        <div class="loan-info-value">${formatDate(loan.startDate)}</div>
-                    </div>
-                    <div class="loan-info-item">
-                        <div class="loan-info-label">Parcelas</div>
-                        <div class="loan-info-value">${loan.installments}x de R$ ${formatCurrency(loan.installmentValue)}</div>
-                    </div>
-                    <div class="loan-info-item">
-                        <div class="loan-info-label">Valor Total</div>
-                        <div class="loan-info-value">R$ ${formatCurrency(totalLoanValue)}</div>
-                    </div>
-                    <div class="loan-info-item">
-                        <div class="loan-info-label">Valor Pago</div>
-                        <div class="loan-info-value">R$ ${formatCurrency(paidValue)}</div>
-                    </div>
-                    <div class="loan-info-item">
-                        <div class="loan-info-label">Valor Pendente</div>
-                        <div class="loan-info-value">R$ ${formatCurrency(pendingValue)}</div>
-                    </div>
-                </div>
-                <h3>Parcelas</h3>
-                <ul class="installments-list">
-                    ${renderInstallmentsList(loan.payments)}
-                </ul>
-            </div>
-        `;
-
+    // Exibir todos os empréstimos
+    loans.forEach(loan => {
+        const loanCard = createLoanCard(loan);
         loansList.appendChild(loanCard);
-
-        // Adicionar event listeners para as ações
-        const toggleBtn = loanCard.querySelector('.toggle-details');
-        const details = loanCard.querySelector('.loan-details');
-        const editBtn = loanCard.querySelector('.edit-loan');
-        const deleteBtn = loanCard.querySelector('.delete-loan');
-
-        toggleBtn.addEventListener('click', () => {
-            details.style.display = details.style.display === 'block' ? 'none' : 'block';
-            toggleBtn.querySelector('i').classList.toggle('fa-chevron-down');
-            toggleBtn.querySelector('i').classList.toggle('fa-chevron-up');
-        });
-
-        editBtn.addEventListener('click', () => {
-            openModal(loan.id);
-        });
-
-        deleteBtn.addEventListener('click', () => {
-            if (confirm(`Tem certeza que deseja excluir a pendência "${loan.name}"?`)) {
-                deleteLoan(loan.id);
-            }
-        });
-
-        // Adicionar event listeners para os botões de pagamento
-        const paymentButtons = loanCard.querySelectorAll('.toggle-payment');
-        paymentButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const installmentNumber = parseInt(btn.getAttribute('data-installment'));
-                togglePaymentStatus(loan.id, installmentNumber);
-            });
-        });
     });
-
-    checkDueInstallments();
 }
 
-// Renderizar a lista de parcelas para uma dívida
-function renderInstallmentsList(payments) {
-    const today = new Date();
+function createLoanCard(loan) {
+    const loanCard = document.createElement('div');
+    loanCard.className = 'loan-card';
+    loanCard.id = `loan-${loan.id}`;
     
-    return payments.map(payment => {
-        // Determinar o status da parcela
-        let statusClass = 'status-pending';
-        let statusText = 'Pendente';
-        let statusIcon = 'fa-clock';
-        let buttonIcon = 'fa-check';
-        let buttonClass = 'btn-success';
-        let buttonTitle = 'Marcar como pago';
-        
-        if (payment.status === 'paid') {
-            statusClass = 'status-paid';
-            statusText = 'Pago';
-            statusIcon = 'fa-check';
-            buttonIcon = 'fa-times';
-            buttonClass = 'btn-warning';
-            buttonTitle = 'Marcar como pendente';
-        } else if (new Date(payment.dueDate) < today) {
-            statusClass = 'status-late';
-            statusText = 'Atrasado';
-            statusIcon = 'fa-exclamation-triangle';
+    const paidInstallments = loan.installments.filter(inst => inst.paid).length;
+    const totalInstallments = loan.installments.length;
+    const progress = (paidInstallments / totalInstallments) * 100;
+    
+    loanCard.innerHTML = `
+        <div class="loan-header">
+            <div class="loan-title">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <h3>${loan.name}</h3>
+            </div>
+            <div class="loan-actions">
+                <button class="loan-action edit-loan" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="loan-action delete-loan" title="Excluir">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+        <div class="loan-details">
+            <div class="loan-info">
+                <div class="loan-info-item">
+                    <div class="loan-info-label">Credor</div>
+                    <div class="loan-info-value">${loan.creditor || 'Não especificado'}</div>
+                </div>
+                <div class="loan-info-item">
+                    <div class="loan-info-label">Valor Total</div>
+                    <div class="loan-info-value">R$ ${formatCurrency(loan.total)}</div>
+                </div>
+                <div class="loan-info-item">
+                    <div class="loan-info-label">Progresso</div>
+                    <div class="loan-info-value">${paidInstallments} de ${totalInstallments} parcelas (${progress.toFixed(0)}%)</div>
+                </div>
+            </div>
+            <div class="installments-list">
+                <h4>Parcelas</h4>
+                ${createInstallmentsList(loan)}
+            </div>
+        </div>
+    `;
+    
+    // Adicionar event listeners
+    const editBtn = loanCard.querySelector('.edit-loan');
+    const deleteBtn = loanCard.querySelector('.delete-loan');
+    
+    editBtn.addEventListener('click', () => {
+        editLoan(loan.id);
+    });
+    
+    deleteBtn.addEventListener('click', () => {
+        if (confirm(`Tem certeza que deseja excluir "${loan.name}"?`)) {
+            deleteLoan(loan.id);
         }
-        
-        return `
-            <li class="installment-item">
-                <div class="installment-info">
-                    <div class="installment-number">Parcela ${payment.number}</div>
-                    <div class="installment-date">Vencimento: ${formatDate(payment.dueDate)}</div>
-                    <div class="installment-value">R$ ${formatCurrency(payment.value)}</div>
-                    <div class="installment-status">
-                        <span class="status-badge ${statusClass}">
-                            <i class="fas ${statusIcon}"></i> ${statusText}
-                        </span>
-                    </div>
-                </div>
-                <div class="installment-action">
-                    <button class="btn ${buttonClass} toggle-payment" data-installment="${payment.number}" title="${buttonTitle}">
-                        <i class="fas ${buttonIcon}"></i>
-                    </button>
-                </div>
-            </li>
-        `;
-    }).join('');
+    });
+    
+    // Adicionar event listeners para os botões de marcar parcela como paga
+    const payButtons = loanCard.querySelectorAll('.pay-installment');
+    payButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const installmentIndex = parseInt(e.currentTarget.getAttribute('data-index'));
+            toggleInstallmentPaid(loan.id, installmentIndex);
+        });
+    });
+    
+    return loanCard;
 }
 
 // Abrir modal para adicionar ou editar dívida
-async function openModal(loanId = null) {
+async function openLoanModal(isEdit = false, loanId = null) {
+    modalTitle.textContent = isEdit ? 'Editar Pendência' : 'Nova Pendência';
+    isEditing = isEdit;
     currentLoanId = loanId;
-    const loanNameInput = document.getElementById('loan-name');
-    const creditorNameInput = document.getElementById('creditor-name');
-    const loanCategorySelect = document.getElementById('loan-category');
-    const loanTotalInput = document.getElementById('loan-total');
-    const loanDateInput = document.getElementById('loan-date');
-    const loanInstallmentsInput = document.getElementById('loan-installments');
-    const loanValueInput = document.getElementById('loan-value');
-    const loanDueDayInput = document.getElementById('loan-due-day');
-
-    // Limpar formulário
+    
+    // Limpar o formulário
     loanForm.reset();
-
-    if (loanId) {
-        // Edição de dívida existente
-        try {
-            const loan = await db.getLoan(loanId);
-            if (loan) {
-                modalTitle.textContent = 'Editar Pendência';
-                loanNameInput.value = loan.name;
-                // Preencher o campo credor se existir, senão deixar vazio
-                creditorNameInput.value = loan.creditor || '';
-                // Definir categoria
-                if (loan.category) {
-                    loanCategorySelect.value = loan.category;
-                } else {
-                    loanCategorySelect.value = 'outros';
-                }
-                // Calcular o valor total baseado nas parcelas existentes
-                const totalValue = loan.installmentValue * loan.installments;
-                loanTotalInput.value = totalValue;
-                loanDateInput.value = loan.startDate;
-                loanInstallmentsInput.value = loan.installments;
-                loanValueInput.value = loan.installmentValue;
-                loanDueDayInput.value = loan.dueDay;
-            }
-        } catch (error) {
-            console.error('Erro ao carregar dívida para edição:', error);
-            alert('Erro ao carregar dívida para edição. Tente novamente.');
-            return;
+    
+    if (isEdit && loanId) {
+        const loan = loans.find(l => l.id === loanId);
+        if (loan) {
+            // Preencher o formulário com os dados do empréstimo
+            document.getElementById('loan-name').value = loan.name;
+            document.getElementById('creditor-name').value = loan.creditor || '';
+            document.getElementById('loan-total').value = loan.total;
+            document.getElementById('loan-installments').value = loan.installments.length;
+            document.getElementById('loan-value').value = loan.installmentValue;
+            document.getElementById('loan-date').value = formatDateForInput(loan.startDate);
+            document.getElementById('loan-due-day').value = loan.dueDay;
         }
-    } else {
-        // Nova dívida
-        modalTitle.textContent = 'Nova Pendência';
     }
-
+    
     loanModal.style.display = 'block';
 }
 
@@ -494,7 +356,6 @@ function closeModal() {
 async function saveFormData() {
     const loanNameInput = document.getElementById('loan-name');
     const creditorNameInput = document.getElementById('creditor-name');
-    const loanCategorySelect = document.getElementById('loan-category');
     const loanTotalInput = document.getElementById('loan-total');
     const loanDateInput = document.getElementById('loan-date');
     const loanInstallmentsInput = document.getElementById('loan-installments');
@@ -503,7 +364,6 @@ async function saveFormData() {
 
     const name = loanNameInput.value.trim();
     const creditor = creditorNameInput.value.trim();
-    const category = loanCategorySelect.value;
     const totalValue = parseFloat(loanTotalInput.value);
     const startDate = loanDateInput.value;
     const installments = parseInt(loanInstallmentsInput.value);
@@ -547,8 +407,7 @@ async function saveFormData() {
                 id: currentLoanId,
                 name,
                 creditor,
-                category,
-                totalValue,
+                total: totalValue,
                 startDate,
                 installments,
                 installmentValue,
@@ -571,8 +430,7 @@ async function saveFormData() {
             const newLoan = {
                 name,
                 creditor,
-                category,
-                totalValue,
+                total: totalValue,
                 startDate,
                 installments,
                 installmentValue,
@@ -781,19 +639,6 @@ function showNotification(message, type = 'success') {
     }, 5000);
 }
 
-// Função auxiliar para obter o nome da categoria
-function getCategoryName(categoryCode) {
-    const categories = {
-        'pessoal': 'Pessoal',
-        'familia': 'Família',
-        'compras': 'Compras Online',
-        'emergencia': 'Emergência',
-        'outros': 'Outros'
-    };
-    
-    return categories[categoryCode] || 'Outros';
-}
-
 // Sistema de Notificações
 
 // Verificar parcelas próximas do vencimento
@@ -809,7 +654,6 @@ function checkDueInstallments() {
     // Para cada empréstimo
     loans.forEach(loan => {
         const loanName = loan.name;
-        const category = getCategoryName(loan.category);
         
         // Para cada parcela
         loan.payments.forEach(payment => {
@@ -827,7 +671,7 @@ function checkDueInstallments() {
                     const notification = {
                         id: `due-${loan.id}-${payment.number}`,
                         type: 'due',
-                        title: `Vencimento Próximo - ${category}`,
+                        title: `Vencimento Próximo`,
                         message: notificationText,
                         date: new Date(),
                         read: false,
