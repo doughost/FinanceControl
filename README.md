@@ -14,7 +14,6 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 - Banco de dados integrado no navegador (IndexedDB)
 - Sistema de notificações para feedback ao usuário
 - Interface responsiva para desktop e dispositivos móveis
-- **Exportação e importação de dados para backup**
 - **Relatórios financeiros e gráficos interativos**
 - **Notificações de vencimento para parcelas próximas**
 - **Modo escuro (Dark Mode) para conforto visual**
@@ -27,11 +26,9 @@ Um aplicativo web simples para controlar dívidas, parcelas e pagamentos. Ideal 
 4. Use os filtros para visualizar pendências por categoria
 5. Para visualizar os detalhes de uma dívida, clique no ícone de expansão (seta para baixo)
 6. Para marcar uma parcela como paga/pendente, clique no botão correspondente na linha da parcela
-7. **Para fazer backup dos seus dados, clique no botão "Exportar"**
-8. **Para restaurar um backup, clique no botão "Importar" e selecione o arquivo**
-9. **Para visualizar relatórios financeiros, clique no botão "Ver Relatórios"**
-10. **Para visualizar notificações de vencimento, clique no ícone de sino no topo da página**
-11. **Para alternar entre modo claro e escuro, clique no ícone de sol/lua no canto superior direito**
+7. **Para visualizar relatórios financeiros, clique no botão "Ver Relatórios"**
+8. **Para visualizar notificações de vencimento, clique no ícone de sino no topo da página**
+9. **Para alternar entre modo claro e escuro, clique no ícone de sol/lua no canto superior direito**
 
 ## Tecnologias Utilizadas
 
@@ -60,16 +57,6 @@ Esta aplicação utiliza IndexedDB, um banco de dados NoSQL integrado nos navega
 - Funciona offline sem necessidade de conexão com a internet
 - Os dados persistem mesmo após fechar o navegador
 - Importação automática de dados do localStorage (se houver)
-
-## Backups e Exportação
-
-Os dados são armazenados no banco de dados IndexedDB do navegador. Para evitar perda de dados:
-
-- Use a função de exportação regularmente para salvar backups dos seus dados
-- Os backups são salvos como arquivos JSON com nome contendo a data
-- Você pode importar um backup a qualquer momento usando a função de importação
-- A importação substitui todos os dados atuais pelos dados do arquivo de backup
-- Recomendamos fazer backup antes de limpar os dados do navegador ou trocar de dispositivo
 
 ## Relatórios Financeiros
 
@@ -132,5 +119,5 @@ Possíveis melhorias para futuras versões:
 
 - Sincronização com a nuvem
 - Múltiplos devedores/categorias
-- Relatórios mais avançados e exportação de dados em PDF
+- Relatórios mais avançados
 - Integração com calendários externos 

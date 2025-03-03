@@ -51,25 +51,32 @@
     --highlight-color: rgba(115, 139, 254, 0.7);
 }
 
-/* Botão do alternador de tema */
+/* Estilos para o botão de alternância de tema */
 .theme-toggle {
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    font-size: 24px;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease;
-    position: relative;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    transition: all 0.3s ease;
 }
 
 .theme-toggle:hover {
     transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle i {
+    font-size: 1.5rem;
 }
 
 /* Transição suave para mudança de tema */
@@ -181,12 +188,14 @@ header h1 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .loans-header h2 {
-    color: var(--text-color);
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-color);
 }
 
 .header-actions {
@@ -195,9 +204,8 @@ header h1 {
     align-items: center;
 }
 
-.backup-buttons {
-    display: flex;
-    gap: 8px;
+#add-loan-btn {
+    max-width: 250px;
 }
 
 .btn-secondary {
@@ -402,7 +410,7 @@ header h1 {
     margin-left: 10px;
 }
 
-/* Modal */
+/* Estilos para o modal */
 .modal {
     display: none;
     position: fixed;
@@ -411,32 +419,41 @@ header h1 {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
     overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
     background-color: var(--card-bg-color);
     margin: 10% auto;
     padding: 20px;
-    border-radius: var(--border-radius);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
     max-width: 500px;
-    width: 90%;
     position: relative;
-    box-shadow: var(--shadow);
+    color: var(--text-color);
 }
 
 .close {
-    color: var(--dark-gray);
-    float: right;
-    font-size: 1.5rem;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
     font-weight: bold;
     cursor: pointer;
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: var(--text-muted);
+}
+
+.close:hover {
+    color: var(--primary-color);
+}
+
+.modal-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-size: 1.5rem;
 }
 
 .form-group {
@@ -572,22 +589,17 @@ header h1 {
     
     .loans-header {
         flex-direction: column;
-        gap: 10px;
         align-items: flex-start;
+    }
+
+    .loans-header h2 {
+        margin-bottom: 10px;
     }
 
     .header-actions {
         width: 100%;
         flex-direction: column;
         gap: 10px;
-    }
-
-    .backup-buttons {
-        width: 100%;
-    }
-    
-    .backup-buttons button {
-        flex: 1;
     }
     
     .loans-header button {
@@ -659,6 +671,11 @@ header h1 {
     }
 
     .form-group button {
+        width: 100%;
+    }
+
+    #add-loan-btn {
+        max-width: 100%;
         width: 100%;
     }
 }
@@ -838,80 +855,6 @@ select {
 .filter-button.active {
     opacity: 1;
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
-}
-
-/* Estilos para o modal de importação */
-.warning-text {
-    background-color: rgba(255, 152, 0, 0.1);
-    border-left: 4px solid var(--warning-color);
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-    color: var(--warning-color);
-    font-weight: 500;
-}
-
-.warning-text i {
-    margin-right: 8px;
-}
-
-.file-input-container {
-    margin: 20px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-input[type="file"] {
-    display: none;
-}
-
-.file-input-label {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: var(--card-bg-color);
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-
-.file-input-label:hover {
-    background-color: var(--secondary-color);
-}
-
-.file-input-label i {
-    margin-right: 8px;
-}
-
-#file-name {
-    margin-top: 5px;
-    color: var(--dark-gray);
-    font-style: italic;
-}
-
-.import-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.import-status {
-    margin-top: 20px;
-    padding: 10px 0;
-}
-
-/* Import result messages */
-.import-success {
-    color: var(--success-color);
-    font-weight: 500;
-}
-
-.import-error {
-    color: var(--danger-color);
-    font-weight: 500;
 }
 
 /* Estilos para a seção de relatórios financeiros */
