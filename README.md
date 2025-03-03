@@ -86,12 +86,3 @@ O aplicativo oferece um modo escuro completo para reduzir o cansaço visual, esp
 - **Design Adaptativo**: Todos os elementos da interface são otimizados para ambos os temas.
 
 O modo escuro não apenas oferece conforto visual, mas também pode reduzir o consumo de bateria em dispositivos com telas OLED/AMOLED.
-
-## Desenvolvimento Futuro
-
-Possíveis melhorias para futuras versões:
-
-- Sincronização com a nuvem
-- Múltiplos devedores/categorias
-- Relatórios mais avançados
-- Integração com calendários externos 
