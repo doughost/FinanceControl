@@ -1288,8 +1288,10 @@ canvas {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: transparent;
-    padding: 0;
+    background-color: var(--primary-color);
+    color: white;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-decoration: none;
@@ -1302,14 +1304,12 @@ canvas {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.donation-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
+.donation-button i {
+    font-size: 24px;
 }
 
 [data-theme="dark"] .donation-button {
+    background-color: var(--secondary-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -1317,10 +1317,11 @@ canvas {
     .donation-button {
         bottom: 20px;
         right: 20px;
-    }
-    
-    .donation-icon {
         width: 40px;
         height: 40px;
+    }
+    
+    .donation-button i {
+        font-size: 20px;
     }
 } 
