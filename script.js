@@ -72,6 +72,7 @@ let notifications = [];
 let notificationDays = 7;
 let showNotificationPopup = true;
 let checkOnStartup = true;
+let notificationsEnabled = true;
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
