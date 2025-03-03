@@ -786,14 +786,19 @@ header h1 {
 
 /* Estilo para o select de categoria */
 select {
-    width: 100%;
-    padding: 10px;
+    appearance: none;
+    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background-color: var(--light-gray);
-    font-size: 16px;
-    margin-bottom: 5px;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
     color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
 }
 
 /* Estilos para os indicadores de categoria */
@@ -802,9 +807,9 @@ select {
     padding: 3px 8px;
     border-radius: 12px;
     font-size: 12px;
-    font-weight: bold;
-    margin-right: 8px;
+    margin-left: 8px;
     color: white;
+    font-weight: 500;
 }
 
 .category-pessoal {
@@ -832,26 +837,28 @@ select {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     padding: 10px;
-    background-color: var(--light-gray);
+    background-color: var(--card-bg);
     border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .filter-button {
     padding: 6px 12px;
     border: none;
-    border-radius: 16px;
+    border-radius: 20px;
+    background-color: var(--light-bg);
+    color: var(--text-color);
     font-size: 14px;
     cursor: pointer;
-    color: white;
-    opacity: 0.7;
-    transition: opacity 0.3s;
+    transition: all 0.2s ease;
 }
 
 .filter-button.active {
-    opacity: 1;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
 }
 
 /* Estilos para a seção de relatórios financeiros */
